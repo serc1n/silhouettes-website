@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silhouettes Editor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans:wght@100;400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans', sans-serif;
+            font-weight: 400;
+            background-color: #000000;
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            overflow-x: hidden;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2.5rem;
+            letter-spacing: 3px;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .header p {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 0.5px;
+        }
+
+        .editor-container {
+            width: 100%;
+            max-width: 1400px;
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 30px;
+            align-items: start;
+            min-height: 800px;
+        }
+
+        .controls-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 0;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .controls-panel h2 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.4rem;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            display: block;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            font-family: 'Noto Sans', sans-serif;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        input[type="number"]::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .color-control {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .color-picker-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .color-display {
+            width: 60px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            position: relative;
+            transition: border-color 0.3s ease;
+        }
+
+        .color-display:hover {
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .color-value {
+            font-family: 'Noto Sans', sans-serif;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            flex: 1;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .color-value:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        input[type="color"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .range-control {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .range-wrapper {
+            position: relative;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #ffffff;
+            cursor: pointer;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: #ffffff;
+            cursor: pointer;
+            border-radius: 50%;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .range-value {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 8px;
+            border-radius: 2px;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        button {
+            padding: 12px 18px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: #ffffff;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .download-btn {
+            border-color: #ffffff;
+        }
+
+        .download-btn:hover {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        #svg-container {
+            background: #000000;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 800px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #svg-container svg {
+            width: 100%;
+            height: auto;
+            max-width: 500px;
+            max-height: 750px;
+        }
+
+        .placeholder-text {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.3);
+            text-align: center;
+        }
+
+        .loading {
+            color: rgba(255, 255, 255, 0.6);
+            font-family: 'Bebas Neue', cursive;
+            letter-spacing: 1px;
+        }
+
+        .error {
+            color: rgba(255, 100, 100, 0.8);
+            font-family: 'Bebas Neue', cursive;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 1200px) {
+            .editor-container {
+                max-width: 1200px;
+                grid-template-columns: 350px 1fr;
+                gap: 25px;
+                min-height: 700px;
+            }
+
+            #svg-container {
+                min-height: 700px;
+            }
+
+            #svg-container svg {
+                max-height: 650px;
+            }
+        }
+
+        @media (max-width: 968px) {
+            .editor-container {
+                grid-template-columns: 1fr;
+                gap: 25px;
+                min-height: auto;
+            }
+
+            .controls-panel {
+                position: static;
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            #svg-container {
+                padding: 20px;
+                min-height: 600px;
+            }
+
+            #svg-container svg {
+                max-height: 550px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px 10px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .controls-panel {
+                padding: 15px;
+            }
+
+            #svg-container {
+                padding: 15px;
+                min-height: 500px;
+            }
+
+            #svg-container svg {
+                max-height: 450px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>SILHOUETTES EDITOR</h1>
+        <p>Customize and download your silhouettes with advanced editing controls</p>
+    </div>
+
+    <div class="editor-container">
+        <div class="controls-panel">
+            <h2>CONTROLS</h2>
+            
+            <div class="control-group">
+                <label for="svg-id">SILHOUETTE ID</label>
+                <input type="number" id="svg-id" placeholder="Enter ID (0-998)" oninput="loadSVG()">
+            </div>
+
+            <div class="control-group">
+                <label>LINE COLOR</label>
+                <div class="color-control">
+                    <div class="color-picker-wrapper">
+                        <div class="color-display" id="line-color-display" onclick="triggerColorPicker('line-color')"></div>
+                        <div class="color-value" id="line-color-value" onclick="triggerColorPicker('line-color')">#ffffff</div>
+                        <input type="color" id="line-color" value="#ffffff" oninput="changeLineColor(this.value)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>BACKGROUND COLOR</label>
+                <div class="color-control">
+                    <div class="color-picker-wrapper">
+                        <div class="color-display" id="bg-color-display" onclick="triggerColorPicker('bg-color')"></div>
+                        <div class="color-value" id="bg-color-value" onclick="triggerColorPicker('bg-color')">#000000</div>
+                        <input type="color" id="bg-color" value="#000000" oninput="changeBackgroundColor(this.value)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>LINE WIDTH</label>
+                <div class="range-control">
+                    <div class="range-wrapper">
+                        <input type="range" id="line-width" value="0.3" min="0.1" max="3" step="0.1" oninput="changeLineWidth(this.value)">
+                    </div>
+                    <div class="range-value" id="line-width-value">0.3px</div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button onclick="randomizeColors()">RANDOMIZE COLORS</button>
+                <button onclick="resetToDefault()">RESET TO DEFAULT</button>
+                <button id="download-png-btn" class="download-btn" style="display:none;" onclick="downloadAsPNG()">DOWNLOAD PNG</button>
+                <button id="download-svg-btn" class="download-btn" style="display:none;" onclick="downloadAsSVG()">DOWNLOAD SVG</button>
+            </div>
+        </div>
+
+        <div id="svg-container">
+            <div class="placeholder-text">Enter a Silhouette ID to begin editing</div>
+        </div>
+    </div>
+
+    <script>
+        const githubBaseUrl = "https://raw.githubusercontent.com/serc1n/svg/main/";
+
+        function updateColorDisplay(colorId, displayId, valueId) {
+            const color = document.getElementById(colorId).value;
+            document.getElementById(displayId).style.backgroundColor = color;
+            document.getElementById(valueId).textContent = color.toUpperCase();
+        }
+
+        function updateRangeValue(rangeId, valueId, suffix = '') {
+            const value = document.getElementById(rangeId).value;
+            document.getElementById(valueId).textContent = value + suffix;
+        }
+
+        function triggerColorPicker(colorId) {
+            document.getElementById(colorId).click();
+        }
+
+        function setLineColor(color) {
+            document.getElementById('line-color').value = color;
+            changeLineColor(color);
+        }
+
+        function setBackgroundColor(color) {
+            document.getElementById('bg-color').value = color;
+            changeBackgroundColor(color);
+        }
+
+        function loadSVG() {
+            const svgId = document.getElementById('svg-id').value;
+            const container = document.getElementById('svg-container');
+            
+            if (!svgId) {
+                container.innerHTML = '<div class="placeholder-text">Enter a Silhouette ID to begin editing</div>';
+                document.getElementById('download-png-btn').style.display = 'none';
+                document.getElementById('download-svg-btn').style.display = 'none';
+                return;
+            }
+
+            container.innerHTML = '<div class="loading">Loading silhouette...</div>';
+
+            const svgUrl = `${githubBaseUrl}${svgId}.svg`;
+
+            fetch(svgUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('SVG not found');
+                    }
+                    return response.text();
+                })
+                .then(svgContent => {
+                    container.innerHTML = svgContent;
+
+                    const svg = container.querySelector('svg');
+                    if (svg) {
+                        svg.setAttribute('width', '100%');
+                        svg.setAttribute('height', 'auto');
+                        
+                        // Apply current settings
+                        const bgColor = document.getElementById('bg-color').value;
+                        const lineColor = document.getElementById('line-color').value;
+                        const lineWidth = document.getElementById('line-width').value;
+                        
+                        svg.querySelector('rect')?.setAttribute('fill', bgColor);
+                        
+                        const style = svg.querySelector('style');
+                        if (style) {
+                            style.textContent = style.textContent.replace(/stroke:\s*#[0-9a-fA-F]+;/g, `stroke: ${lineColor};`);
+                            style.textContent = style.textContent.replace(/stroke-width:\s*\d*\.?\d+px;/g, `stroke-width: ${lineWidth}px;`);
+                        }
+                    }
+                    document.getElementById('download-png-btn').style.display = 'block';
+                    document.getElementById('download-svg-btn').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error loading SVG:', error);
+                    container.innerHTML = '<div class="error">Silhouette not found. Please check the ID.</div>';
+                    document.getElementById('download-png-btn').style.display = 'none';
+                    document.getElementById('download-svg-btn').style.display = 'none';
+                });
+        }
+
+        function changeLineColor(color) {
+            updateColorDisplay('line-color', 'line-color-display', 'line-color-value');
+            
+            const svg = document.querySelector('#svg-container svg');
+            if (!svg) return;
+
+            const style = svg.querySelector('style');
+            if (style) {
+                style.textContent = style.textContent.replace(/stroke:\s*#[0-9a-fA-F]+;/g, `stroke: ${color};`);
+            }
+
+            svg.querySelectorAll('[stroke]').forEach(el => {
+                el.setAttribute('stroke', color);
+            });
+        }
+
+        function changeBackgroundColor(color) {
+            updateColorDisplay('bg-color', 'bg-color-display', 'bg-color-value');
+            
+            const svg = document.querySelector('#svg-container svg');
+            if (!svg) return;
+
+            svg.querySelector('rect')?.setAttribute('fill', color);
+        }
+
+        function changeLineWidth(width) {
+            updateRangeValue('line-width', 'line-width-value', 'px');
+            
+            const svg = document.querySelector('#svg-container svg');
+            if (!svg) return;
+
+            const style = svg.querySelector('style');
+            if (style) {
+                style.textContent = style.textContent.replace(/stroke-width:\s*\d*\.?\d+px;/g, `stroke-width: ${width}px;`);
+            }
+
+            svg.querySelectorAll('[stroke-width]').forEach(el => {
+                el.setAttribute('stroke-width', width);
+            });
+        }
+
+        function randomizeColors() {
+            const randomColor = () => `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
+            const lineColor = randomColor();
+            const bgColor = randomColor();
+
+            setLineColor(lineColor);
+            setBackgroundColor(bgColor);
+        }
+
+        function resetToDefault() {
+            setLineColor('#ffffff');
+            setBackgroundColor('#000000');
+            document.getElementById('line-width').value = '0.3';
+            updateRangeValue('line-width', 'line-width-value', 'px');
+            changeLineWidth('0.3');
+        }
+
+        function downloadAsPNG() {
+            const svg = document.querySelector('#svg-container svg');
+            const svgId = document.getElementById('svg-id').value;
+            if (!svg || !svgId) {
+                alert('Please load a silhouette first before downloading.');
+                return;
+            }
+
+            try {
+                // Get the original SVG content
+                const serializer = new XMLSerializer();
+                let svgString = serializer.serializeToString(svg);
+                
+                // Use the correct high-resolution dimensions for PNG export
+                const svgWidth = 1920;
+                const svgHeight = 2400;
+                
+                // Replace or add width/height attributes in the SVG string
+                svgString = svgString.replace(/width="[^"]*"/g, `width="${svgWidth}"`);
+                svgString = svgString.replace(/height="[^"]*"/g, `height="${svgHeight}"`);
+                
+                // If no width/height attributes exist, add them
+                if (!svgString.includes('width=')) {
+                    svgString = svgString.replace('<svg', `<svg width="${svgWidth}" height="${svgHeight}"`);
+                }
+                
+                // Ensure viewBox exists
+                if (!svgString.includes('viewBox=')) {
+                    svgString = svgString.replace('<svg', `<svg viewBox="0 0 ${svgWidth} ${svgHeight}"`);
+                }
+                
+                // Create canvas
+                const canvas = document.createElement('canvas');
+                canvas.width = svgWidth;
+                canvas.height = svgHeight;
+                const ctx = canvas.getContext('2d');
+                
+                // Create image from SVG
+                const img = new Image();
+                const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+                const url = URL.createObjectURL(svgBlob);
+                
+                img.onload = function() {
+                    try {
+                        // Clear canvas with background color
+                        const bgColor = document.getElementById('bg-color').value;
+                        ctx.fillStyle = bgColor;
+                        ctx.fillRect(0, 0, svgWidth, svgHeight);
+                        
+                        // Draw SVG
+                        ctx.drawImage(img, 0, 0, svgWidth, svgHeight);
+                        
+                        // Clean up the blob URL
+                        URL.revokeObjectURL(url);
+                        
+                        // Convert to PNG and download
+                        canvas.toBlob(function(blob) {
+                            if (!blob) {
+                                alert('Failed to generate PNG. Please try again.');
+                                return;
+                            }
+                            
+                            const downloadUrl = URL.createObjectURL(blob);
+                            const link = document.createElement('a');
+                            link.href = downloadUrl;
+                            link.download = `Silhouettes_${svgId}_edited.png`;
+                            
+                            // Trigger download
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            
+                            // Clean up
+                            setTimeout(() => URL.revokeObjectURL(downloadUrl), 100);
+                        }, 'image/png');
+                        
+                    } catch (error) {
+                        console.error('Error processing PNG:', error);
+                        alert('Failed to process PNG. Please try again.');
+                        URL.revokeObjectURL(url);
+                    }
+                };
+                
+                img.onerror = function() {
+                    console.error('Error loading SVG for PNG conversion');
+                    alert('Failed to load image for PNG conversion. Please try again.');
+                    URL.revokeObjectURL(url);
+                };
+                
+                img.src = url;
+                
+            } catch (error) {
+                console.error('PNG download error:', error);
+                alert('PNG download failed. Please try again.');
+            }
+        }
+
+        function downloadAsSVG() {
+            const svg = document.querySelector('#svg-container svg');
+            const svgId = document.getElementById('svg-id').value;
+            if (!svg || !svgId) {
+                alert('Please load a silhouette first before downloading.');
+                return;
+            }
+
+            try {
+                const serializer = new XMLSerializer();
+                let svgString = serializer.serializeToString(svg);
+                
+                // Ensure the SVG has proper XML declaration
+                if (!svgString.startsWith('<?xml')) {
+                    svgString = '<?xml version="1.0" encoding="UTF-8"?>\n' + svgString;
+                }
+                
+                const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `Silhouettes_${svgId}_edited.svg`;
+                
+                // Trigger download
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                // Clean up
+                setTimeout(() => URL.revokeObjectURL(url), 100);
+                
+            } catch (error) {
+                console.error('SVG download error:', error);
+                alert('SVG download failed. Please try again.');
+            }
+        }
+
+        // Initialize displays
+        document.addEventListener('DOMContentLoaded', function() {
+            updateColorDisplay('line-color', 'line-color-display', 'line-color-value');
+            updateColorDisplay('bg-color', 'bg-color-display', 'bg-color-value');
+            updateRangeValue('line-width', 'line-width-value', 'px');
+        });
+    </script>
+</body>
+</html>

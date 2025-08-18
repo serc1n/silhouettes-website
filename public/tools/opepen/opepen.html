@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Silhouettes x Opepen Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans:wght@400&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans', sans-serif;
+      background: #000000;
+      color: #ffffff;
+      padding: 20px;
+      gap: 20px;
+      min-height: 100vh;
+    }
+
+    .tool-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 30px;
+      min-height: 800px;
+    }
+
+    .controls-panel {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      position: sticky;
+      top: 20px;
+      height: fit-content;
+    }
+
+    .tool-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .tool-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.8rem;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      color: #ffffff;
+    }
+
+    .tool-description {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.6);
+      line-height: 1.4;
+    }
+
+    .control-group {
+      margin-bottom: 25px;
+    }
+
+    .control-label {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      color: rgba(255, 255, 255, 0.8);
+      display: block;
+    }
+
+    #image-number {
+      width: 100%;
+      padding: 12px 15px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      font-family: 'Noto Sans', sans-serif;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      -moz-appearance: textfield;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    #image-number:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    #image-number::-webkit-outer-spin-button,
+    #image-number::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    #image-number::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 25px;
+    }
+
+    button {
+      padding: 12px 18px;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      color: #ffffff;
+      font-family: 'Bebas Neue', cursive;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background: #ffffff;
+      color: #000000;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    button:disabled:hover {
+      background: transparent;
+      color: #ffffff;
+    }
+
+    #output-container {
+      background: #000000;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 800px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #image-container {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #base-image, #overlay-image {
+      display: none;
+    }
+
+    canvas {
+      display: none;
+      width: 100%;
+      height: auto;
+      max-width: 600px;
+      max-height: 600px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .placeholder-text {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      color: rgba(255, 255, 255, 0.3);
+      text-align: center;
+    }
+
+    .loading {
+      color: rgba(255, 255, 255, 0.6);
+      font-family: 'Bebas Neue', cursive;
+      letter-spacing: 1px;
+    }
+
+    .error {
+      color: rgba(255, 100, 100, 0.8);
+      font-family: 'Bebas Neue', cursive;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 1200px) {
+      .tool-container {
+        max-width: 1200px;
+        grid-template-columns: 350px 1fr;
+        gap: 25px;
+        min-height: 700px;
+      }
+
+      #output-container {
+        min-height: 700px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .tool-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .controls-panel {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="tool-container">
+    <div class="controls-panel">
+      <div class="tool-header">
+        <h1 class="tool-title">SILHOUETTES X OPEPEN GENERATOR</h1>
+        <p class="tool-description">Combine any silhouette artwork with Opepen overlays to create unique hybrid pieces</p>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label" for="image-number">SILHOUETTE ID (0-998)</label>
+        <input type="number" id="image-number" placeholder="Enter Silhouette ID" min="0" max="998" />
+      </div>
+
+      <div class="button-group">
+        <button id="random-button">RANDOM SILHOUETTE</button>
+        <button id="download-button" style="display: none;">DOWNLOAD PNG</button>
+      </div>
+    </div>
+
+    <div id="output-container">
+      <div id="image-container">
+        <div class="placeholder-text">ENTER A SILHOUETTE ID TO GENERATE</div>
+        <img id="base-image" alt="Base Image" />
+        <img id="overlay-image" 
+             src="https://raw.githubusercontent.com/serc1n/slh/refs/heads/main/opepen.png" 
+             alt="Overlay Image" />
+        <canvas id="final-canvas"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Random button functionality
+    document.getElementById('random-button').addEventListener('click', () => {
+      const randomId = Math.floor(Math.random() * 999); // Generate random number 0-998
+      document.getElementById('image-number').value = randomId;
+      
+      // Trigger the input event to generate the image
+      const event = new Event('input', { bubbles: true });
+      document.getElementById('image-number').dispatchEvent(event);
+    });
+
+    // Automatically combine images when the number is entered
+    document.getElementById('image-number').addEventListener('input', () => {
+      const inputNumber = document.getElementById('image-number').value;
+      const placeholderText = document.querySelector('.placeholder-text');
+      const canvas = document.getElementById('final-canvas');
+
+      if (inputNumber === "") {
+        // Reset canvas and hide buttons if input is empty
+        canvas.style.display = 'none';
+        canvas.width = 0;
+        canvas.height = 0;
+        document.getElementById('download-button').style.display = 'none';
+        placeholderText.style.display = 'block';
+        placeholderText.textContent = 'ENTER A SILHOUETTE ID TO GENERATE';
+        placeholderText.className = 'placeholder-text';
+        return;
+      }
+
+      // Show loading state
+      placeholderText.style.display = 'block';
+      placeholderText.textContent = 'GENERATING...';
+      placeholderText.className = 'placeholder-text loading';
+      canvas.style.display = 'none';
+
+      // Use the raw GitHub link for the base image
+      const baseImageSrc = `https://raw.githubusercontent.com/serc1n/slh/main/${inputNumber}.png`;
+
+      const baseImage = new Image();
+      const overlayImage = document.getElementById('overlay-image');
+      const ctx = canvas.getContext('2d');
+
+      // Set the crossOrigin attribute to allow cross-origin images
+      baseImage.crossOrigin = "anonymous";
+      overlayImage.crossOrigin = "anonymous";
+
+      // Set canvas size to be square (1920x1920)
+      const squareSize = 1920;
+      canvas.width = squareSize;
+      canvas.height = squareSize;
+
+      // Set the source of the base image
+      baseImage.src = baseImageSrc;
+
+      // Wait for the base image to load
+      baseImage.onload = () => {
+        // Crop the base image (from top and bottom) to 1920x1920
+        const cropWidth = 1920;
+        const cropHeight = 1920;
+        const cropY = (baseImage.height - cropHeight) / 2; // Crop from top and bottom
+
+        // Draw the cropped base image onto the canvas
+        ctx.drawImage(baseImage, 0, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+
+        // Wait for the overlay image to load
+        overlayImage.onload = () => {
+          // Draw the overlay image onto the canvas after the base image
+          ctx.drawImage(overlayImage, 0, 0, squareSize, squareSize);
+
+          // Hide placeholder and show canvas
+          placeholderText.style.display = 'none';
+          canvas.style.display = 'block';
+
+          // Enable the buttons once the image is ready
+          document.getElementById('download-button').style.display = 'block';
+        };
+
+        // If the overlay image is already loaded, draw it immediately
+        if (overlayImage.complete) {
+          ctx.drawImage(overlayImage, 0, 0, squareSize, squareSize);
+
+          // Hide placeholder and show canvas
+          placeholderText.style.display = 'none';
+          canvas.style.display = 'block';
+
+          // Enable the buttons once the image is ready
+          document.getElementById('download-button').style.display = 'block';
+        }
+      };
+
+      // Handle base image loading errors
+      baseImage.onerror = () => {
+        placeholderText.style.display = 'block';
+        placeholderText.textContent = 'ERROR: SILHOUETTE NOT FOUND';
+        placeholderText.className = 'placeholder-text error';
+        canvas.style.display = 'none';
+        document.getElementById('download-button').style.display = 'none';
+      };
+    });
+
+
+
+    // Add download image functionality
+    document.getElementById('download-button').addEventListener('click', () => {
+      const canvas = document.getElementById('final-canvas');
+      const silhouetteId = document.getElementById('image-number').value;
+      const link = document.createElement('a');
+      
+      link.download = `Silhouettes_${silhouetteId}_x_Opepen.png`;
+      link.href = canvas.toDataURL('image/png');
+      
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+  </script>
+</body>
+</html>
