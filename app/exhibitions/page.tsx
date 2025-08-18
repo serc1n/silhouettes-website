@@ -186,7 +186,7 @@ export default function Exhibitions() {
       coordinates: { lat: 41.9028, lng: 12.4964 },
       images: [
         "/images/1.JPG",
-        "/images/4.JPG"
+        "/images/4.jpg"
       ],
       highlights: [
         "360° projection mapping in Salone delle Colonne",
@@ -203,7 +203,7 @@ export default function Exhibitions() {
       location: "New York",
       coordinates: { lat: 40.7128, lng: -74.0060 },
       images: [
-        "/images/5.JPG",
+        "/images/5.jpg",
         "/images/6.JPEG"
       ],
       highlights: [
