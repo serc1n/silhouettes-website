@@ -30,7 +30,7 @@ export default function Physicals() {
       title: "Fine Art Prints",
       description: "Museum-quality prints on archival paper",
       material: "Archival matte paper with white ink on black substrate",
-      images: ["/images/7.JPG", "/images/8.JPG" , "/images/9.JPEG"]
+      images: ["/images/7.JPG", "/images/8.JPG", "/images/9.jpeg"]
     },
     /* {
       id: 2,
