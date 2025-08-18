@@ -27,26 +27,26 @@ export default function Home() {
     <div className="min-h-screen">
       <Header />
       
-      <main className="pt-40">
+      <main className="pt-32 sm:pt-40">
         {/* Hero Section */}
-        <section className="min-h-screen flex items-center justify-center px-6">
+        <section className="min-h-screen flex items-center justify-center px-4 sm:px-6">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="font-bebas text-6xl md:text-8xl lg:text-9xl mb-8 tracking-wider">
+            <h1 className="font-bebas text-5xl sm:text-6xl md:text-8xl lg:text-9xl mb-6 sm:mb-8 tracking-wider">
               SILHOUETTES
             </h1>
-            <p className="text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed px-4">
               a generative art collection by Serc, born with the idea of "Less is more."
             </p>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center px-4">
               <Link 
                 href="/gallery" 
-                className="border border-white px-8 py-3 hover:bg-white hover:text-black transition-all duration-300"
+                className="border border-white px-6 sm:px-8 py-3 hover:bg-white hover:text-black transition-all duration-300 text-sm sm:text-base"
               >
                 VIEW GALLERY
               </Link>
               <Link 
                 href="/about" 
-                className="border border-white/50 px-8 py-3 hover:border-white transition-all duration-300"
+                className="border border-white/50 px-6 sm:px-8 py-3 hover:border-white transition-all duration-300 text-sm sm:text-base"
               >
                 ABOUT THE COLLECTION
               </Link>
@@ -55,13 +55,13 @@ export default function Home() {
         </section>
 
         {/* Featured Section */}
-        <section className="py-20 px-6 border-t border-white/10">
+        <section className="py-12 sm:py-20 px-4 sm:px-6 border-t border-white/10">
           <div className="container mx-auto max-w-6xl">
-            <h2 className="font-bebas text-4xl md:text-5xl mb-16 text-center tracking-wider">
+            <h2 className="font-bebas text-3xl sm:text-4xl md:text-5xl mb-8 sm:mb-16 text-center tracking-wider">
               FEATURED WORKS
             </h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {featuredArtworks.map((artwork) => (
                 <div 
                   key={artwork.id} 

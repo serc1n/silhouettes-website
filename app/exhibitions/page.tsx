@@ -230,14 +230,14 @@ export default function Exhibitions() {
             </p>
           </div>
           
-          <div className="space-y-16">
+          <div className="space-y-8 sm:space-y-16">
             {exhibitions.map((exhibition) => (
               <div key={exhibition.id} className="border border-white/20 overflow-hidden">
-                <div className="md:flex">
+                <div className="flex flex-col lg:flex-row">
                   {/* Left Half - Images */}
-                  <div className="md:w-1/2 p-8">
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                      <h2 className="font-bebas text-3xl tracking-wider mb-2 md:mb-0">
+                  <div className="lg:w-1/2 p-4 sm:p-6 lg:p-8">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+                      <h2 className="font-bebas text-2xl sm:text-3xl tracking-wider mb-2 sm:mb-0">
                         {exhibition.title}
                       </h2>
                       <span className="text-sm text-white/70 font-medium">
@@ -261,7 +261,7 @@ export default function Exhibitions() {
                   </div>
                   
                   {/* Right Half - Highlights and Map */}
-                  <div className="md:w-1/2 bg-black border-l border-white/20 p-8 flex flex-col">
+                  <div className="lg:w-1/2 bg-black border-t lg:border-t-0 lg:border-l border-white/20 p-4 sm:p-6 lg:p-8 flex flex-col">
                     {/* Highlights */}
                     <div className="mb-6">
                       <h3 className="font-bebas text-lg tracking-wider mb-3 text-white/90">

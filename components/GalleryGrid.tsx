@@ -246,7 +246,7 @@ const GalleryGrid = () => {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 lg:gap-8">
           {currentArtworks.map((artwork) => (
           <div key={artwork.id} className="gallery-item group">
             <div className="aspect-square border border-white/20 relative overflow-hidden">
@@ -317,24 +317,24 @@ const GalleryGrid = () => {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-center items-center mt-12 space-x-4">
+        <div className="flex flex-col sm:flex-row justify-center items-center mt-8 sm:mt-12 gap-4 sm:gap-0 sm:space-x-4">
           <button
             onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
             disabled={currentPage === 1}
-            className="px-4 py-2 border border-white/30 hover:border-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="w-full sm:w-auto px-4 py-2 border border-white/30 hover:border-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-sm sm:text-base"
           >
             PREVIOUS
           </button>
           
-          <div className="flex space-x-2">
-            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-              const pageNum = currentPage <= 3 ? i + 1 : currentPage - 2 + i
+          <div className="flex space-x-1 sm:space-x-2">
+            {Array.from({ length: Math.min(3, totalPages) }, (_, i) => {
+              const pageNum = currentPage <= 2 ? i + 1 : currentPage - 1 + i
               if (pageNum > totalPages) return null
               return (
                 <button
                   key={pageNum}
                   onClick={() => setCurrentPage(pageNum)}
-                  className={`px-3 py-2 border ${
+                  className={`px-2 sm:px-3 py-2 border text-sm ${
                     currentPage === pageNum 
                       ? 'border-white bg-white text-black' 
                       : 'border-white/30 hover:border-white'
@@ -349,7 +349,7 @@ const GalleryGrid = () => {
           <button
             onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
             disabled={currentPage === totalPages}
-            className="px-4 py-2 border border-white/30 hover:border-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="w-full sm:w-auto px-4 py-2 border border-white/30 hover:border-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-sm sm:text-base"
           >
             NEXT
           </button>
@@ -358,16 +358,16 @@ const GalleryGrid = () => {
 
       {/* Modal for full-size viewing */}
       {isModalOpen && selectedArtwork && (
-        <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
-          <div className="max-w-4xl max-h-full relative">
+        <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-2 sm:p-4">
+          <div className="max-w-4xl max-h-full relative w-full">
             <button
               onClick={closeModal}
-              className="absolute -top-12 right-0 text-white/70 hover:text-white text-2xl"
+              className="absolute -top-8 sm:-top-12 right-0 text-white/70 hover:text-white text-xl sm:text-2xl bg-black/50 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded"
             >
               ×
             </button>
             
-            <div className="bg-black border border-white/20 p-8">
+            <div className="bg-black border border-white/20 p-4 sm:p-6 lg:p-8">
               <div className="aspect-square max-w-2xl mx-auto flex items-center justify-center relative">
                 {/* Full-size SVG display with magnifier */}
                 <div 
@@ -415,24 +415,26 @@ const GalleryGrid = () => {
                 </div>
               </div>
               
-              <div className="mt-6 text-center">
-                <h3 className="font-bebas text-2xl tracking-wider mb-2">
+              <div className="mt-4 sm:mt-6 text-center">
+                <h3 className="font-bebas text-xl sm:text-2xl tracking-wider mb-2">
                   {selectedArtwork.title}
                 </h3>
                 {selectedArtwork.description && (
-                  <p className="text-white/70 mb-4">
+                  <p className="text-white/70 mb-4 text-sm sm:text-base">
                     {selectedArtwork.description}
                   </p>
                 )}
                 
-                <p className="text-white/50 text-sm mb-4">
-                  Hover over image to magnify • Scroll to zoom in/out • Current zoom: {(zoomLevel / 100).toFixed(1)}x
+                <p className="text-white/50 text-xs sm:text-sm mb-4 px-2">
+                  <span className="hidden sm:inline">Hover over image to magnify • Scroll to zoom in/out • </span>
+                  <span className="sm:hidden">Tap and hold to magnify • Pinch to zoom • </span>
+                  Current zoom: {(zoomLevel / 100).toFixed(1)}x
                 </p>
                 
-                <div className="flex justify-center space-x-4">
+                <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 sm:space-x-4">
                   <button
                     onClick={() => downloadSVG(selectedArtwork.filename, selectedArtwork.title)}
-                    className="border border-white/50 px-4 py-2 hover:border-white transition-colors flex items-center space-x-2"
+                    className="border border-white/50 px-4 py-2 hover:border-white transition-colors flex items-center justify-center space-x-2"
                   >
                     <Download size={16} />
                     <span>SVG</span>
