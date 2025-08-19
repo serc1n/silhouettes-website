@@ -34,14 +34,9 @@ export default function Home() {
             <h1 className="font-bebas text-5xl sm:text-6xl md:text-8xl lg:text-9xl mb-6 sm:mb-8 tracking-wider">
               SILHOUETTES
             </h1>
-            <div className="mb-8 sm:mb-12 max-w-3xl mx-auto px-4">
-              <p className="text-base sm:text-lg md:text-xl leading-relaxed mb-2">
-                a generative art collection by Serc,
-              </p>
-              <p className="text-sm sm:text-base md:text-lg text-white/80 leading-relaxed">
-                born with the idea of "Less is more."
-              </p>
-            </div>
+            <p className="text-sm sm:text-base md:text-lg mb-8 sm:mb-12 max-w-4xl mx-auto leading-relaxed px-4">
+              a generative art collection by Serc, born with the idea of "Less is more."
+            </p>
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center px-4">
               <Link 
                 href="/gallery" 

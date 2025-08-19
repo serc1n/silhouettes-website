@@ -4,6 +4,7 @@ import React from 'react'
 import './globals.css'
 import Background from '../components/Background'
 import Footer from '../components/Footer'
+import GoogleAnalytics from '../components/GoogleAnalytics'
 
 const bebasNeue = Bebas_Neue({ 
   subsets: ['latin'],
@@ -39,6 +40,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  // Replace 'G-XXXXXXXXXX' with your actual Google Analytics Measurement ID
+  const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_ID || ''
+
   return (
     <html lang="en" className={`${bebasNeue.variable} ${notoSans.variable}`}>
       <head>
@@ -47,6 +51,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans:wght@400&display=swap" rel="stylesheet" />
       </head>
       <body className="text-white font-noto font-normal text-sm antialiased">
+        <GoogleAnalytics GA_TRACKING_ID={GA_TRACKING_ID} />
         <Background />
         {children}
         <Footer />
