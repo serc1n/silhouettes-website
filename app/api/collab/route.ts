@@ -1,4 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
+
+// Initialize Supabase client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,20 +19,33 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Log the collaboration request (for now, since Vercel can't write files)
-    console.log('🎨 New Collaboration Request:')
-    console.log('Timestamp:', timestamp)
-    console.log('Artist Name:', artistName)
-    console.log('Twitter Handle:', twitterHandle)
-    console.log('Medium:', medium)
-    console.log('Expectation:', expectation)
-    console.log('---')
+    // Clean Twitter handle (add @ if missing)
+    const cleanTwitterHandle = twitterHandle.startsWith('@') 
+      ? twitterHandle 
+      : `@${twitterHandle}`
 
-    // In a real application, you would:
-    // - Send to a database (like Supabase, PlanetScale, etc.)
-    // - Send to an email service (like SendGrid, Mailgun)
-    // - Send to a form service (like Formspree, Netlify Forms)
-    // - Send to Google Sheets via Google Apps Script
+    // Insert into Supabase database
+    const { data, error } = await supabase
+      .from('collaboration_requests')
+      .insert([
+        {
+          artist_name: artistName,
+          twitter_handle: cleanTwitterHandle,
+          medium: medium,
+          expectation: expectation,
+          created_at: timestamp || new Date().toISOString()
+        }
+      ])
+
+    if (error) {
+      console.error('Supabase error:', error)
+      return NextResponse.json(
+        { error: 'Failed to save collaboration request' },
+        { status: 500 }
+      )
+    }
+
+    console.log('🎨 New Collaboration Request Saved:', data)
     
     return NextResponse.json(
       { message: 'Collaboration request submitted successfully' },
