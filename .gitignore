@@ -32,4 +32,10 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts 
+next-env.d.ts
+
+# collaboration data (private)
+collaboration_requests.csv
+/data/*.csv
+*.csv
+!/data/.gitkeep 

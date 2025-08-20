@@ -89,7 +89,7 @@ export default function Tools() {
                           {tool.description}
                         </p>
                       )}
-                      {tool.features.length > 0 && (
+                      {tool.features && tool.features.length > 0 && (
                         <div className="flex flex-wrap gap-2">
                           {tool.features.map((feature, index) => (
                             <span 
