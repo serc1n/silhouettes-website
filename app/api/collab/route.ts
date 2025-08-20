@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import fs from 'fs'
-import path from 'path'
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,41 +13,21 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create CSV file path in secure data directory
-    const dataDir = path.join(process.cwd(), 'data')
-    const csvFilePath = path.join(dataDir, 'collaboration_requests.csv')
+    // Log the collaboration request (for now, since Vercel can't write files)
+    console.log('🎨 New Collaboration Request:')
+    console.log('Timestamp:', timestamp)
+    console.log('Artist Name:', artistName)
+    console.log('Twitter Handle:', twitterHandle)
+    console.log('Medium:', medium)
+    console.log('Expectation:', expectation)
+    console.log('---')
+
+    // In a real application, you would:
+    // - Send to a database (like Supabase, PlanetScale, etc.)
+    // - Send to an email service (like SendGrid, Mailgun)
+    // - Send to a form service (like Formspree, Netlify Forms)
+    // - Send to Google Sheets via Google Apps Script
     
-    // Ensure data directory exists
-    if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir, { recursive: true })
-    }
-    
-    // Check if file exists, if not create it with headers
-    if (!fs.existsSync(csvFilePath)) {
-      const headers = 'Timestamp,Artist Name,Twitter Handle,Medium,Expectation from the Collab\n'
-      fs.writeFileSync(csvFilePath, headers, 'utf8')
-    }
-
-    // Escape CSV values (handle commas and quotes)
-    const escapeCsvValue = (value: string) => {
-      if (value.includes(',') || value.includes('"') || value.includes('\n')) {
-        return `"${value.replace(/"/g, '""')}"`
-      }
-      return value
-    }
-
-    // Create CSV row
-    const csvRow = [
-      timestamp,
-      escapeCsvValue(artistName),
-      escapeCsvValue(twitterHandle),
-      escapeCsvValue(medium),
-      escapeCsvValue(expectation)
-    ].join(',') + '\n'
-
-    // Append to CSV file
-    fs.appendFileSync(csvFilePath, csvRow, 'utf8')
-
     return NextResponse.json(
       { message: 'Collaboration request submitted successfully' },
       { status: 200 }
