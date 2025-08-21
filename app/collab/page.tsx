@@ -90,9 +90,9 @@ export default function Collab() {
             <h1 className="font-bebas text-4xl sm:text-5xl md:text-7xl mb-4 sm:mb-6 tracking-wider">
               COLLABORATION
             </h1>
-            <p className="text-base sm:text-lg max-w-xl mx-auto leading-relaxed text-white/80">
-              Interested in collaborating with Silhouettes? Fill out this form and we'll get back to you.
-            </p>
+                          <p className="text-base sm:text-lg max-w-xl mx-auto leading-relaxed text-white/80">
+                Interested in collaborating with Silhouettes?
+              </p>
           </div>
           
           <div className="bg-black border border-white/20 p-6 sm:p-8 lg:p-12 rounded-lg">
@@ -208,9 +208,7 @@ export default function Collab() {
 
           {/* Additional Info */}
           <div className="mt-8 sm:mt-12 text-center">
-            <p className="text-white/60 text-sm sm:text-base">
-              We review all collaboration requests and will get back to you within 48 hours.
-            </p>
+            
           </div>
         </div>
       </main>
