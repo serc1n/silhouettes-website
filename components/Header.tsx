@@ -44,8 +44,8 @@ const Header = () => {
             <Link href="/tools" className="nav-link text-sm sm:text-lg font-bebas tracking-wider">
               TOOLS
             </Link>
-            <Link href="/collab" className="nav-link text-sm sm:text-lg font-bebas tracking-wider">
-              COLLAB
+            <Link href="/lineup" className="nav-link text-sm sm:text-lg font-bebas tracking-wider">
+              LINE UP!
             </Link>
             <a 
               href="https://migrate.silhouettes.io" 
